@@ -1,8 +1,8 @@
 # Prolog::Dry::Types
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/prolog/dry/types`. To experiment with that code, run `bin/console` for an interactive prompt.
+This Gem defines some fairly general-purpose types using the [`dry-types`](https://github.com/dry-rb/dry-types) Gem which, for those not familiar with it yet, is the successor to the venerable [Virtus](https://github.com/solnic/virtus) Gem, originally created by [Piotr Solnica](http://solnic.eu) and contributors. As part of the [`dry-rb`](http://dry-rb.org) collection of Gems, `dry-types` is an extremely useful tool that quickly becomes habit-forming. Side-effects may include more explicit, therefore more understandable code; increased developer happiness, and decreased baldness. (One of those has yet to be proven in actual use.)
 
-TODO: Delete this and the text above, and describe your gem
+`Prolog::Dry::Types` leverages `dry-types`, defining several types in the `Dry::Types` module namespace as documented below under [Usage](#usage). They can be used individually by your code or all type definitions may be included by requiring `'prolog/dry/types'`, 
 
 ## Installation
 
@@ -22,17 +22,185 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+This Gem uses `dry-types` to define (currently) four basic data types suitable for declaring attributes in a `Dry::Types::Struct` (mutable) data structure or a `Dry::Types::Value` immutable value object. These are `Types::Range` and its [`Strict`](http://dry-rb.org/gems/dry-types/strict/) equivalent, `Types::Strict::Range`; `Types::IntegerRange`, `Types::TimeOrNow`, and `Types::UUID`. Each of these is presented in greater detail below.
+
+### `Types::Range` and `Types::Strict::Range`
+
+**Declared in** `prolog/dry/types/range.rb`
+
+#### Example usage
+
+```ruby
+# in your `range_demo.rb` file
+
+require 'prolog/dry/types/range' # or 'prolog/dry/types'
+
+class RangeDemo < Dry::Types::Value
+  attribute :name, Types::Strict::String
+  attribute :range, Types::Strict::Range
+end
+
+# Let's be interactive...
+
+$ pry
+[1] pry(main)> require '/path/to/range_demo'
+true
+[2] pry(main)> range = RangeDemo.new name: 'Some Name', range: 2..5
+{
+     :name => "Some Name",
+    :range => 2..5
+}
+[3] pry(main)> range.range.include? 5
+true
+[4] exit
+$
+```
+
+#### Notes
+
+The attribute value *is* a `Range` instance; it has all the quirks and behaviours that a `Range` instance declared more "conventionally" would have. In particular, a `Range` whose lower bound exceeds its upper bound (such as `(5..2)`) will always be empty. As one would reasonably expect, this attribute may be initialised by either an inclusive (e.g., `0..5`) or exclusive (`0…5`) `Range`, which respectively includes or excludes the upper bound.
+
+### `Types::IntegerRange`
+
+**Declared in** `prolog/dry/types/integer_range.rb`
+
+#### Example usage
+
+```ruby
+# in your 'demo_range.rb' file
+
+require 'prolog/dry/types/integer_range' # or 'prolog/dry/types'
+
+class DemoRange < Dry::Types::Struct
+  attribute :name, Types::Strict::String
+  attribute range: Types::IntegerRange
+end
+
+# Let's be interactive...
+$ pry
+[1] pry(main)> require '/path/to/demo_range'
+true
+[2] pry(main)> range1 = DemoRange.new name: 'A Name', range: nil # defaults to 0..0
+{
+     :name => "A Name",
+    :range => 0..0
+}
+[2] pry(main)> range2 = DemoRange.new name: 'Another Name', range: 8
+{
+     :name => "Another Name",
+    :range => 0..8
+}
+[3] pry(main)> range3 = DemoRange.new name: 'One More', range: (-1..1)
+{
+    :name => "One More",
+   :range => -1..1
+}
+[4] pry(main)> range3.range.to_a
+[
+    [0] -1,
+    [1] 0,
+    [2] 1
+]
+[5] pry(main)> exit
+$
+```
+
+#### Notes
+
+`Types::IntegerRange` *can* be used as though it were a `Types::Range`, with the attribute initialisation using a standard `Range` instance. It was initially developed, however, to provide an easy shorthand for a `Range` with a lower bound of zero, for which one only need supply the upper bound.
+
+### `Types::TimeOrNow`
+
+**Declared in** `prolog/dry/types/time_or_now.rb`
+
+#### Example usage
+
+```ruby
+# In your 'time_demo.rb' file
+
+require 'prolog/dry/types/time_or_now'
+
+class TimeDemo < Dry::Types::Value
+  attribute :when, Types::TimeOrNow
+end
+
+# Interactive again
+$ pry
+[1] pry(main)> require '/path/to/time_demo'
+true
+[2] pry(main)> t0 = Time.now; t1 = TimeDemo.new when: nil
+{
+    :when => 2016-07-31 01:56:11 +0800
+}
+[3] pry(main)> t1.when - t0
+1.3e-05                    # 13 microseconds on this system
+[4] pry(main)> t2 = TimeDemo.new when: Time.parse('23 Jan 2016 12:34:56 SGT')
+{
+    :when => 2016-01-23 12:34:56 +0800
+}
+[5] pry(main)> t3 = TimeDemo.new when: '23 Jan 2016 12:34:56 SGT'
+Dry::Types::StructError: [TimeDemo.new] "23 Jan 2016 12:34:56 SGT" (String) has invalid type for :when
+  from (...omitted...):in 'rescue in new'
+[6] pry(main)> exit
+$
+```
+
+#### Notes
+
+This attribute class was originally `Types::DateTimeOrNow`, wrapping a `DateTime` instance rather than a `Time` instance. The change was made in line with recently-updated [community coding guidelines](https://github.com/bbatsov/ruby-style-guide#no-datetime) which recommend against use of `DateTime` unless a need exists "to account for historical calendar reform".
+
+### `Types::UUID`
+
+**Declared in** `prolog/dry/types/uuid.rb`
+
+#### Example usage
+
+```ruby
+# In your 'uuid_demo.rb' file
+
+require 'prolog/dry/types/uuid'
+
+class UuidDemo < Dry::Types::Value
+  attribute :id, Types::UUID
+end
+
+# Once again, interactive demo
+$ pry
+[1] pry(main)> require '/path/to/uuid_demo'
+true
+[2] pry(main)> demo1 = UuidDemo.new id: nil
+{
+    :id => "419c7d80-38b0-0134-4fad-3c0754526993"
+}
+[3] pry(main)> puts demo1.id
+419c7d80-38b0-0134-4fad-3c0754526993
+nil
+[4] pry(main)> demo2 = UuidDemo.new id: '12345678-1234-5678-123456789012'
+{
+    :id => "12345678-1234-5678-4fad-123456789012"
+}
+[5] pry(main)> demo3 = UuidDemo.new id: '12345678123456784fad123456789012'
+Dry::Types::StructError: [UuidDemo.new] "12345678123456784fad123456789012" (String) has invalid type for :id
+from (omitted):in 'rescue in new'
+[6] pry(main)> exit
+$
+```
+
+#### Notes
+
+Remember that UUIDs, by definition, are for all practical purposes never generated with  the same value twice; one common source of grief is to have your test code generate a UUID, then test your code under test which *also* generates a UUID, and from there, [hilarity ensues](http://tvtropes.org/pmwiki/pmwiki.php/Main/HilarityEnsues?from=Main.HilarityEnsued) as you try to figure out why your tests never pass.
+
+Also remember that the only valid format for a UUID is as a string; if you want to work with the value as though it were a vector of bytes, integers, etc, then you are On Your Own with the existing code.
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to create a `Gemfile.lock` file which identifies specific versions of runtime and development dependencies of this Gem (which as of now must already be installed on your local system). Then, run `bin/rake test` to run the tests, or `bin/rake` to run tests and, if tests are successful, further static-analysis tools ([RuboCop](https://github.com/bbatsov/rubocop), [Flay](https://github.com/seattlerb/flay), [Flog](https://github.com/seattlerb/flog), and [Reek](https://github.com/troessner/reek)).
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install *your build* of this Gem onto your local machine, run `bin/rake install`. We recommend that you uninstall any previously-installed "official" Gem to increase your confidence that your tests are running against your build.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/prolog-dry-types. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/TheProlog/prolog-dry-types. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
