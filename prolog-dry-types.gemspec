@@ -28,6 +28,9 @@ Gem::Specification.new do |spec|
   spec.executables           = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths         = ["lib"]
 
+  spec.add_dependency "dry-types", "0.7.2" # FIXME: fixed spec of old version
+  spec.add_dependency "uuid", "~> 2.3", ">= 2.3.8"
+
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 11.2", ">= 11.2.2"
   spec.add_development_dependency "minitest", "~> 5.0"
