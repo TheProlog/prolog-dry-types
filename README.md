@@ -1,8 +1,10 @@
 # Prolog::Dry::Types
 
+[![Gitter](https://badges.gitter.im/TheProlog/prolog-dry-types.svg)](https://gitter.im/TheProlog/prolog-dry-types?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 This Gem defines some fairly general-purpose types using the [`dry-types`](https://github.com/dry-rb/dry-types) Gem which, for those not familiar with it yet, is the successor to the venerable [Virtus](https://github.com/solnic/virtus) Gem, originally created by [Piotr Solnica](http://solnic.eu) and contributors. As part of the [`dry-rb`](http://dry-rb.org) collection of Gems, `dry-types` is an extremely useful tool that quickly becomes habit-forming. Side-effects may include more explicit, therefore more understandable code; increased developer happiness, and decreased baldness. (One of those has yet to be proven in actual use.)
 
-`Prolog::Dry::Types` leverages `dry-types`, defining several types in the `Dry::Types` module namespace as documented below under [Usage](#usage). They can be used individually by your code or all type definitions may be included by requiring `'prolog/dry/types'`, 
+`Prolog::Dry::Types` leverages `dry-types`, defining several types in the `Dry::Types` module namespace as documented below under [Usage](#usage). They can be used individually by your code or all type definitions may be included by requiring `'prolog/dry/types'`,
 
 ## Installation
 
@@ -206,4 +208,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/ThePro
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
