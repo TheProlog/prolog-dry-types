@@ -26,6 +26,10 @@ Or install it yourself as:
 
 This Gem uses `dry-types` to define (currently) four basic data types suitable for declaring attributes in a `Dry::Types::Struct` (mutable) data structure or a `Dry::Types::Value` immutable value object. These are `Types::Range` and its [`Strict`](http://dry-rb.org/gems/dry-types/strict/) equivalent, `Types::Strict::Range`; `Types::IntegerRange`, `Types::TimeOrNow`, and `Types::UUID`. Each of these is presented in greater detail below.
 
+### IMPORTANT NOTE
+
+Any code that `require`s the `prolog/dry/types` file and then defines a data structure or value object (using `::Dry::Types::Struct` or `::Dry:Types::Value` respectively) (almost universally) *must* mark `Dry` as belonging to the global namespace. That is, use `::Dry::Types::Value`, *not* `Dry::Types::Value`. (Some would argue that we ought to be doing this anyway; we had previously written off such opinions as pedantic. No longer.)
+
 ### `Types::Range` and `Types::Strict::Range`
 
 **Declared in** `prolog/dry/types/range.rb`
