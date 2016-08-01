@@ -10,6 +10,7 @@ module Types
   include Dry::Types.module
 end
 
+require_relative './types/error_array'
 require_relative './types/integer_range'
 
 # Why not use DateTime as was done before? Recently-updated community guidelines
