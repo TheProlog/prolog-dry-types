@@ -1,6 +1,17 @@
 # Prolog::Dry::Types
 
-[![Gitter](https://badges.gitter.im/TheProlog/prolog-dry-types.svg)](https://gitter.im/TheProlog/prolog-dry-types?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+# DEPRECATION NOTICE
+
+Effective 5 August 2016 at 01:30 SGT (GMT+8), this Gem is now *deprecated* and *will no longer be maintained.* It has been replaced in its entirety by the [`prolog-dry_types`](https://github.com/TheProlog/prolog-dry_types) Gem going forward.
+
+This was done to eliminate at least two [known issues](https://github.com/TheProlog/prolog-dry_types/blob/master/README.md) with the earlier Gem, where one involved a complete change to the API of the Gem that was judged to be severe enough to justify a "reboot". The new Gem implements each of the type definitions implemented in this one.
+
+This Gem **will be yanked from RubyGems on or after Monday 5 September 2016.**
+
+You Have Been Warned.
+
+----
+----
 
 This Gem defines some fairly general-purpose types using the [`dry-types`](https://github.com/dry-rb/dry-types) Gem which, for those not familiar with it yet, is the successor to the venerable [Virtus](https://github.com/solnic/virtus) Gem, originally created by [Piotr Solnica](http://solnic.eu) and contributors. As part of the [`dry-rb`](http://dry-rb.org) collection of Gems, `dry-types` is an extremely useful tool that quickly becomes habit-forming. Side-effects may include more explicit, therefore more understandable code; increased developer happiness, and decreased baldness. (One of those has yet to be proven in actual use.)
 
