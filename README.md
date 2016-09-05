@@ -6,9 +6,9 @@ Effective 5 August 2016 at 01:30 SGT (GMT+8), this Gem is now *deprecated* and *
 
 This was done to eliminate at least two [known issues](https://github.com/TheProlog/prolog-dry_types/blob/master/README.md) with the earlier Gem, where one involved a complete change to the API of the Gem that was judged to be severe enough to justify a "reboot". The new Gem implements each of the type definitions implemented in this one.
 
-This Gem **will be yanked from RubyGems on or after Monday 5 September 2016.**
+This Gem **has been yanked from RubyGems**. Again, please use the [`prolog-dry_types`](https://github.com/TheProlog/prolog-dry_types) Gem instead. Thank you.
 
-You Have Been Warned.
+The original README is preserved below.
 
 ----
 ----
